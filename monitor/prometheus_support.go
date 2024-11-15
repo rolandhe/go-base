@@ -64,19 +64,31 @@ func ListenAndServe(port int) {
 }
 
 func DoClientReqCounter(url string) {
+	if ClientReqCounter == nil {
+		return
+	}
 	ClientReqCounter.WithLabelValues(url).Inc()
 }
 
 func DoClientDuration(url string, e string, cost int64) {
+	if ClientReqDuration == nil || ClientReqGauge == nil {
+		return
+	}
 	ClientReqDuration.WithLabelValues(url, e).Observe(float64(cost))
 	ClientReqGauge.WithLabelValues(url, e).Set(float64(cost))
 }
 
 func DoServerCounter(url string) {
+	if ServerReqCounter == nil {
+		return
+	}
 	ServerReqCounter.WithLabelValues(url).Inc()
 }
 
 func DoServerDuration(url string, e string, cost int64) {
+	if ServerReqDuration == nil || ServerReqGauge == nil {
+		return
+	}
 	ServerReqDuration.WithLabelValues(url, e).Observe(float64(cost))
 	ServerReqGauge.WithLabelValues(url, e).Set(float64(cost))
 }
