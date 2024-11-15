@@ -3,11 +3,16 @@ package commons
 import "maps"
 
 const (
-	TraceId   = "trace-id"
-	Profile   = "profile"
-	UID       = "uid"
-	Role      = "role"
-	Possessor = "possessor"
+	TraceId    = "trace-id"
+	Profile    = "profile"
+	UID        = "uid"
+	Role       = "role"
+	Possessor  = "possessor"
+	Platform   = "platform"
+	Lang       = "lang"
+	Token      = "token"
+	ShareToken = "share-token"
+	RemoteIp   = "remote-ip"
 )
 
 type BaseContext interface {
