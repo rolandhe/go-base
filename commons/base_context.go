@@ -22,16 +22,27 @@ type BaseContext interface {
 	Put(key string, value string)
 	Get(key string) string
 	Clone() BaseContext
+	QuickInfo() *QuickInfo
+}
+
+type QuickInfo struct {
+	NotLogSqlConf bool
+	uid           int64
 }
 
 func NewBaseContext() BaseContext {
 	return &baseContextImpl{
 		container: map[string]string{},
+		qinfo: &QuickInfo{
+			NotLogSqlConf: false,
+			uid:           -1,
+		},
 	}
 }
 
 type baseContextImpl struct {
 	container map[string]string
+	qinfo     *QuickInfo
 }
 
 func (bc *baseContextImpl) Put(key string, value string) {
@@ -50,13 +61,21 @@ func (bc *baseContextImpl) Clone() BaseContext {
 	return n
 }
 
+func (bc *baseContextImpl) QuickInfo() *QuickInfo {
+	return bc.qinfo
+}
+
 func GetUid(bc BaseContext) int64 {
+	if bc.QuickInfo().uid != -1 {
+		return bc.QuickInfo().uid
+	}
 	sUid := bc.Get(UID)
 	if sUid == "" {
+		bc.QuickInfo().uid = 0
 		return 0
 	}
-	uid, _ := strconv.ParseInt(sUid, 10, 64)
-	return uid
+	bc.QuickInfo().uid, _ = strconv.ParseInt(sUid, 10, 64)
+	return bc.QuickInfo().uid
 }
 
 func GetToken(bc BaseContext) string {
