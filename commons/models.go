@@ -4,6 +4,7 @@ import "go/types"
 
 const (
 	OKCode    int = 200
+	NotLogin      = 4001
 	CommonErr     = 5000
 )
 
@@ -13,9 +14,16 @@ type Result[T any] struct {
 	Data   T      `json:"data"`
 }
 
-func ErrResult(errMsg string) *Result[types.Nil] {
+func QuickErrResult(errMsg string) *Result[types.Nil] {
 	return &Result[types.Nil]{
 		Code:   CommonErr,
+		ErrMsg: errMsg,
+	}
+}
+
+func ErrResult(code int, errMsg string) *Result[types.Nil] {
+	return &Result[types.Nil]{
+		Code:   code,
 		ErrMsg: errMsg,
 	}
 }
