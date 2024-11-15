@@ -10,6 +10,8 @@ const (
 	Platform   = "platform"
 	Token      = "token"
 	ShareToken = "share-token"
+
+	PrivateUid = "private-uid"
 )
 
 type QuickInfo struct {
