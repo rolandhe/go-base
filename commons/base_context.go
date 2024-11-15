@@ -2,13 +2,12 @@ package commons
 
 import (
 	"maps"
-	"strconv"
 )
 
 const (
 	TraceId    = "trace-id"
 	Profile    = "profile"
-	UID        = "uid"
+	UID        = "Uid"
 	Role       = "role"
 	Possessor  = "possessor"
 	Platform   = "platform"
@@ -27,7 +26,9 @@ type BaseContext interface {
 
 type QuickInfo struct {
 	NotLogSqlConf bool
-	uid           int64
+	Uid           int64
+	UserType      string
+	BUserRole     string
 }
 
 func NewBaseContext() BaseContext {
@@ -35,7 +36,7 @@ func NewBaseContext() BaseContext {
 		container: map[string]string{},
 		qinfo: &QuickInfo{
 			NotLogSqlConf: false,
-			uid:           -1,
+			Uid:           -1,
 		},
 	}
 }
@@ -63,19 +64,6 @@ func (bc *baseContextImpl) Clone() BaseContext {
 
 func (bc *baseContextImpl) QuickInfo() *QuickInfo {
 	return bc.qinfo
-}
-
-func GetUid(bc BaseContext) int64 {
-	if bc.QuickInfo().uid != -1 {
-		return bc.QuickInfo().uid
-	}
-	sUid := bc.Get(UID)
-	if sUid == "" {
-		bc.QuickInfo().uid = 0
-		return 0
-	}
-	bc.QuickInfo().uid, _ = strconv.ParseInt(sUid, 10, 64)
-	return bc.QuickInfo().uid
 }
 
 func GetToken(bc BaseContext) string {
