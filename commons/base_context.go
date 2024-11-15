@@ -7,69 +7,70 @@ import (
 const (
 	TraceId    = "trace-id"
 	Profile    = "profile"
-	UID        = "Uid"
-	Role       = "role"
-	Possessor  = "possessor"
 	Platform   = "platform"
-	Lang       = "lang"
 	Token      = "token"
 	ShareToken = "share-token"
-	RemoteIp   = "remote-ip"
 )
-
-type BaseContext interface {
-	Put(key string, value string)
-	Get(key string) string
-	Clone() BaseContext
-	QuickInfo() *QuickInfo
-}
 
 type QuickInfo struct {
 	NotLogSqlConf bool
-	Uid           int64
-	UserType      string
-	BUserRole     string
+
+	*UserInfo
 }
 
-func NewBaseContext() BaseContext {
-	return &baseContextImpl{
+type UserInfo struct {
+	Uid       int64
+	UserType  string
+	BUserRole string
+}
+
+func NewBaseContext() *BaseContext {
+	return &BaseContext{
 		container: map[string]string{},
 		qinfo: &QuickInfo{
 			NotLogSqlConf: false,
-			Uid:           -1,
+			UserInfo:      &UserInfo{},
 		},
 	}
 }
 
-type baseContextImpl struct {
+type BaseContext struct {
 	container map[string]string
 	qinfo     *QuickInfo
 }
 
-func (bc *baseContextImpl) Put(key string, value string) {
+func (bc *BaseContext) Put(key string, value string) {
 	bc.container[key] = value
 }
 
-func (bc *baseContextImpl) Get(key string) string {
+func (bc *BaseContext) Get(key string) string {
 	return bc.container[key]
 }
 
-func (bc *baseContextImpl) Clone() BaseContext {
-	n := &baseContextImpl{
+func (bc *BaseContext) Clone() *BaseContext {
+	n := &BaseContext{
 		container: map[string]string{},
 	}
 	maps.Copy(n.container, bc.container)
 	return n
 }
 
-func (bc *baseContextImpl) QuickInfo() *QuickInfo {
+func (bc *BaseContext) QuickInfo() *QuickInfo {
 	return bc.qinfo
 }
 
-func GetToken(bc BaseContext) string {
+func GetToken(bc *BaseContext) string {
 	return bc.Get(Token)
 }
 
-func GetShareToken(bc BaseContext) string {
+func GetShareToken(bc *BaseContext) string {
 	return bc.Get(ShareToken)
+}
+
+func GetPlatform(bc *BaseContext) string {
+	return bc.Get(Platform)
+}
+
+func GetProfile(bc *BaseContext) string {
+	return bc.Get(Profile)
 }
