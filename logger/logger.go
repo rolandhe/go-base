@@ -18,7 +18,7 @@ func getGoroutineID() uint64 {
 	return n
 }
 
-func WithBaseContextDebugf(bc commons.BaseContext) func(template string, args ...interface{}) {
+func WithBaseContextDebugf(bc *commons.BaseContext) func(template string, args ...interface{}) {
 	traceId := bc.Get(commons.TraceId)
 	return func(template string, args ...interface{}) {
 		template = changeTemplate(template, traceId)
@@ -31,7 +31,7 @@ func Debugf(template string, args ...interface{}) {
 	core.WithOptions(zap.AddCallerSkip(1)).Debugf(template, args...)
 }
 
-func WithBaseContextInfof(bc commons.BaseContext) func(template string, args ...interface{}) {
+func WithBaseContextInfof(bc *commons.BaseContext) func(template string, args ...interface{}) {
 	traceId := bc.Get(commons.TraceId)
 	return func(template string, args ...interface{}) {
 		template = changeTemplate(template, traceId)
@@ -44,7 +44,7 @@ func Infof(template string, args ...interface{}) {
 	core.WithOptions(zap.AddCallerSkip(1)).Infof(template, args...)
 }
 
-func WithBaseContextWarnf(bc commons.BaseContext) func(template string, args ...interface{}) {
+func WithBaseContextWarnf(bc *commons.BaseContext) func(template string, args ...interface{}) {
 	traceId := bc.Get(commons.TraceId)
 	return func(template string, args ...interface{}) {
 		template = changeTemplate(template, traceId)
@@ -56,7 +56,7 @@ func Warnf(template string, args ...interface{}) {
 	core.WithOptions(zap.AddCallerSkip(1)).Warnf(template, args...)
 }
 
-func WithBaseContextErrorf(bc commons.BaseContext) func(template string, args ...interface{}) {
+func WithBaseContextErrorf(bc *commons.BaseContext) func(template string, args ...interface{}) {
 	traceId := bc.Get(commons.TraceId)
 	return func(template string, args ...interface{}) {
 		template = changeTemplate(template, traceId)
