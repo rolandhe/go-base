@@ -1,6 +1,9 @@
 package commons
 
-import "maps"
+import (
+	"maps"
+	"strconv"
+)
 
 const (
 	TraceId    = "trace-id"
@@ -45,4 +48,21 @@ func (bc *baseContextImpl) Clone() BaseContext {
 	}
 	maps.Copy(n.container, bc.container)
 	return n
+}
+
+func GetUid(bc BaseContext) int64 {
+	sUid := bc.Get(UID)
+	if sUid == "" {
+		return 0
+	}
+	uid, _ := strconv.ParseInt(sUid, 10, 64)
+	return uid
+}
+
+func GetToken(bc BaseContext) string {
+	return bc.Get(Token)
+}
+
+func GetShareToken(bc BaseContext) string {
+	return bc.Get(ShareToken)
 }
