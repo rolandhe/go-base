@@ -28,6 +28,20 @@ func ErrResult(code int, errMsg string) *Result[types.Nil] {
 	}
 }
 
+func QuickTypeErrResult[T any](errMsg string) *Result[T] {
+	return &Result[T]{
+		Code:   CommonErr,
+		ErrMsg: errMsg,
+	}
+}
+
+func ErrTypeResult[T any](code int, errMsg string) *Result[T] {
+	return &Result[T]{
+		Code:   code,
+		ErrMsg: errMsg,
+	}
+}
+
 func OkResult[T any](data T) *Result[T] {
 	return &Result[T]{
 		Code: OKCode,
