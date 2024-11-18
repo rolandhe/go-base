@@ -24,6 +24,7 @@ type UserInfo struct {
 	Uid         int64
 	AccountType int
 	BUserRole   string
+	OpId        int64
 }
 
 func (ui *UserInfo) ToUniqueId() int64 {
