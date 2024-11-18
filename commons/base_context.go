@@ -21,9 +21,13 @@ type QuickInfo struct {
 }
 
 type UserInfo struct {
-	Uid       int64
-	UserType  string
-	BUserRole string
+	Uid         int64
+	AccountType int
+	BUserRole   string
+}
+
+func (ui *UserInfo) ToUniqueId() int64 {
+	return UniqAccountId(ui.Uid, ui.AccountType)
 }
 
 func NewBaseContext() *BaseContext {
