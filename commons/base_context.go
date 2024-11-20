@@ -21,10 +21,14 @@ type QuickInfo struct {
 }
 
 type UserInfo struct {
-	Uid         int64
-	AccountType int
-	BUserRole   string
-	OpId        int64
+	Uid       int64
+	BUserRole string
+	OpId      int64
+}
+
+func (info *UserInfo) AccountType() int {
+	v := info.Uid & int64(MaskAccount)
+	return int(v)
 }
 
 func NewBaseContext() *BaseContext {
