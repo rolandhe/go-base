@@ -27,10 +27,6 @@ type UserInfo struct {
 	OpId        int64
 }
 
-func (ui *UserInfo) ToUniqueId() int64 {
-	return UniqAccountId(ui.Uid, ui.AccountType)
-}
-
 func NewBaseContext() *BaseContext {
 	return &BaseContext{
 		container: map[string]string{},
