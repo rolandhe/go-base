@@ -1,6 +1,9 @@
 package commons
 
-import "go/types"
+import (
+	"errors"
+	"go/types"
+)
 
 const (
 	OKCode    int = 200
@@ -39,6 +42,21 @@ func ErrTypeResult[T any](code int, errMsg string) *Result[T] {
 	return &Result[T]{
 		Code:   code,
 		ErrMsg: errMsg,
+	}
+}
+
+func FromError[T any](err error) *Result[T] {
+	var stdErr *StdError
+	ok := errors.As(err, &stdErr)
+	if ok {
+		return &Result[T]{
+			Code:   stdErr.Code,
+			ErrMsg: stdErr.Message,
+		}
+	}
+	return &Result[T]{
+		Code:   CommonErr,
+		ErrMsg: "internal server error",
 	}
 }
 
