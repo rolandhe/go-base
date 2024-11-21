@@ -34,6 +34,10 @@ func (info *UserInfo) AccountType() int {
 	return int(v)
 }
 
+func (info *UserInfo) IsAttach() bool {
+	return info.OpId == info.Uid
+}
+
 func NewBaseContext() *BaseContext {
 	return &BaseContext{
 		container: map[string]string{},
