@@ -9,9 +9,12 @@ const (
 	Profile    = "profile"
 	Platform   = "platform"
 	Token      = "token"
-	ShareToken = "share-token"
-
 	PrivateUid = "private-uid"
+)
+
+const (
+	ShareToken = "stoken"
+	ShareScene = "sscene"
 )
 
 type QuickInfo struct {
@@ -68,10 +71,6 @@ func (bc *BaseContext) QuickInfo() *QuickInfo {
 
 func GetToken(bc *BaseContext) string {
 	return bc.Get(Token)
-}
-
-func GetShareToken(bc *BaseContext) string {
-	return bc.Get(ShareToken)
 }
 
 func GetPlatform(bc *BaseContext) string {
