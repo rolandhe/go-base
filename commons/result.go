@@ -6,9 +6,9 @@ import (
 )
 
 const (
-	OKCode    int = 200
-	NotLogin      = 4001
-	CommonErr     = 5000
+	OKCode     int = 200
+	BadRequest     = 4100
+	CommonErr      = 5000
 )
 
 type Result[T any] struct {
