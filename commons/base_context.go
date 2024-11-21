@@ -24,9 +24,10 @@ type QuickInfo struct {
 }
 
 type UserInfo struct {
-	Uid   int64
-	Roles int64
-	OpId  int64
+	Uid       int64
+	Roles     int64
+	OpId      int64
+	CompanyId int64
 }
 
 func (info *UserInfo) AccountType() int {
