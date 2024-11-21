@@ -24,9 +24,9 @@ type QuickInfo struct {
 }
 
 type UserInfo struct {
-	Uid       int64
-	BUserRole string
-	OpId      int64
+	Uid   int64
+	Roles int64
+	OpId  int64
 }
 
 func (info *UserInfo) AccountType() int {
@@ -35,7 +35,14 @@ func (info *UserInfo) AccountType() int {
 }
 
 func (info *UserInfo) IsAttach() bool {
-	return info.OpId == info.Uid
+	if info.AccountType() == BAccount && info.OpId != info.Uid {
+		return true
+	}
+	return false
+}
+
+func (info *UserInfo) IsRole(role int64) bool {
+	return info.Roles&role == role
 }
 
 func NewBaseContext() *BaseContext {
