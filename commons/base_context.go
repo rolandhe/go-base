@@ -28,6 +28,7 @@ type UserInfo struct {
 	Roles     int64
 	OpId      int64
 	CompanyId int64
+	TokenId   int64
 }
 
 func (info *UserInfo) AccountType() int {
