@@ -2,7 +2,6 @@ package commons
 
 import (
 	"errors"
-	"go/types"
 )
 
 const (
@@ -14,18 +13,18 @@ const (
 type Result[T any] struct {
 	Code   int    `json:"code"`
 	ErrMsg string `json:"errMsg"`
-	Data   T      `json:"data"`
+	Data   T      `json:"data,omitempty"`
 }
 
-func QuickErrResult(errMsg string) *Result[types.Nil] {
-	return &Result[types.Nil]{
+func QuickErrResult(errMsg string) *Result[*Void] {
+	return &Result[*Void]{
 		Code:   CommonErr,
 		ErrMsg: errMsg,
 	}
 }
 
-func ErrResult(code int, errMsg string) *Result[types.Nil] {
-	return &Result[types.Nil]{
+func ErrResult(code int, errMsg string) *Result[*Void] {
+	return &Result[*Void]{
 		Code:   code,
 		ErrMsg: errMsg,
 	}
@@ -43,6 +42,10 @@ func ErrTypeResult[T any](code int, errMsg string) *Result[T] {
 		Code:   code,
 		ErrMsg: errMsg,
 	}
+}
+
+func QuickFromError(err error) *Result[*Void] {
+	return FromError[*Void](err)
 }
 
 func FromError[T any](err error) *Result[T] {
