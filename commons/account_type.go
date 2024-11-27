@@ -24,3 +24,8 @@ func GetPracticeCompanyId() int64 {
 func uniqAccountId(accountId int64, accountType int) int64 {
 	return accountId<<6 | int64(accountType)
 }
+
+const (
+	AdminRole int64 = 1
+	UserRole        = 2
+)
