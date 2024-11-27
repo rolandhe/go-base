@@ -50,6 +50,10 @@ func (info *UserInfo) IsRole(role int64) bool {
 	return info.Roles&role == role
 }
 
+func (info *UserInfo) IsAdmin() bool {
+	return info.IsRole(AdminRole)
+}
+
 func NewBaseContext() *BaseContext {
 	return &BaseContext{
 		container: map[string]string{},
