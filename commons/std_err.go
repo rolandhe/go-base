@@ -1,5 +1,15 @@
 package commons
 
+const (
+	OKCode          int = 200
+	BadRequest          = 4100
+	CommonErr           = 5000
+	UnAuthorized        = 5103
+	NotValidUser        = 5104
+	InvalidIdentify     = 5105
+	UserExists          = 5106
+)
+
 type StdError struct {
 	Code    int
 	Message string

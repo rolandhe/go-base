@@ -4,12 +4,6 @@ import (
 	"errors"
 )
 
-const (
-	OKCode     int = 200
-	BadRequest     = 4100
-	CommonErr      = 5000
-)
-
 type Result[T any] struct {
 	Code   int    `json:"code"`
 	ErrMsg string `json:"errMsg"`
