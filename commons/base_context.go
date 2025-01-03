@@ -80,7 +80,12 @@ func (bc *BaseContext) Get(key string) string {
 func (bc *BaseContext) Clone() *BaseContext {
 	n := &BaseContext{
 		container: map[string]string{},
+		qinfo: &QuickInfo{
+			NotLogSqlConf: bc.qinfo.NotLogSqlConf,
+			UserInfo:      &UserInfo{},
+		},
 	}
+	*n.qinfo.UserInfo = *bc.qinfo.UserInfo
 	maps.Copy(n.container, bc.container)
 	return n
 }
