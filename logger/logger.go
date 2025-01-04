@@ -26,6 +26,14 @@ func WithBaseContextDebugf(bc *commons.BaseContext) func(template string, args .
 	}
 }
 
+func WithBaseContextAndSkipDebugf(bc *commons.BaseContext, skip int) func(template string, args ...interface{}) {
+	traceId := bc.Get(commons.TraceId)
+	return func(template string, args ...interface{}) {
+		template = changeTemplate(template, traceId)
+		core.WithOptions(zap.AddCallerSkip(skip)).Debugf(template, args...)
+	}
+}
+
 func Debugf(template string, args ...interface{}) {
 	template = changeTemplate(template, "")
 	core.WithOptions(zap.AddCallerSkip(1)).Debugf(template, args...)
@@ -36,6 +44,13 @@ func WithBaseContextInfof(bc *commons.BaseContext) func(template string, args ..
 	return func(template string, args ...interface{}) {
 		template = changeTemplate(template, traceId)
 		core.WithOptions(zap.AddCallerSkip(1)).Infof(template, args...)
+	}
+}
+func WithBaseContextAndSkipInfof(bc *commons.BaseContext, skip int) func(template string, args ...interface{}) {
+	traceId := bc.Get(commons.TraceId)
+	return func(template string, args ...interface{}) {
+		template = changeTemplate(template, traceId)
+		core.WithOptions(zap.AddCallerSkip(skip)).Infof(template, args...)
 	}
 }
 
@@ -51,6 +66,15 @@ func WithBaseContextWarnf(bc *commons.BaseContext) func(template string, args ..
 		core.WithOptions(zap.AddCallerSkip(1)).Warnf(template, args...)
 	}
 }
+
+func WithBaseContextAndSkipWarnf(bc *commons.BaseContext, skip int) func(template string, args ...interface{}) {
+	traceId := bc.Get(commons.TraceId)
+	return func(template string, args ...interface{}) {
+		template = changeTemplate(template, traceId)
+		core.WithOptions(zap.AddCallerSkip(skip)).Warnf(template, args...)
+	}
+}
+
 func Warnf(template string, args ...interface{}) {
 	template = changeTemplate(template, "")
 	core.WithOptions(zap.AddCallerSkip(1)).Warnf(template, args...)
@@ -61,6 +85,13 @@ func WithBaseContextErrorf(bc *commons.BaseContext) func(template string, args .
 	return func(template string, args ...interface{}) {
 		template = changeTemplate(template, traceId)
 		core.WithOptions(zap.AddCallerSkip(1)).Errorf(template, args...)
+	}
+}
+func WithBaseContextAndSkipErrorf(bc *commons.BaseContext, skip int) func(template string, args ...interface{}) {
+	traceId := bc.Get(commons.TraceId)
+	return func(template string, args ...interface{}) {
+		template = changeTemplate(template, traceId)
+		core.WithOptions(zap.AddCallerSkip(skip)).Errorf(template, args...)
 	}
 }
 func Errorf(template string, args ...interface{}) {
