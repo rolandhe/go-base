@@ -27,6 +27,7 @@ type UserInfo struct {
 	Uid         int64
 	UserName    string
 	Mobile      string
+	Email       string
 	Roles       int64
 	OpId        int64
 	CompanyId   int64
