@@ -81,6 +81,10 @@ func (bc *BaseContext) Get(key string) string {
 	return bc.container[key]
 }
 
+func (bc *BaseContext) GetCreateTime() int64 {
+	return bc.createTime
+}
+
 func (bc *BaseContext) Clone() *BaseContext {
 	n := &BaseContext{
 		container:  map[string]string{},
