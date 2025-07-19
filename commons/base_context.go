@@ -65,28 +65,9 @@ func NewBaseContext() *BaseContext {
 	}
 }
 
-func NewBaseContextWithHeaders(headers map[string]string) *BaseContext {
-	return &BaseContext{
-		container:  map[string]string{},
-		headersMap: headers,
-		qinfo: &QuickInfo{
-			NotLogSqlConf: false,
-			UserInfo:      &UserInfo{},
-		},
-	}
-}
-
 type BaseContext struct {
-	container  map[string]string
-	qinfo      *QuickInfo
-	headersMap map[string]string
-}
-
-func (bc *BaseContext) GetHeader(key string) string {
-	if bc.headersMap == nil {
-		return ""
-	}
-	return bc.headersMap[key]
+	container map[string]string
+	qinfo     *QuickInfo
 }
 
 func (bc *BaseContext) Put(key string, value string) {
@@ -99,8 +80,7 @@ func (bc *BaseContext) Get(key string) string {
 
 func (bc *BaseContext) Clone() *BaseContext {
 	n := &BaseContext{
-		container:  map[string]string{},
-		headersMap: maps.Clone(bc.headersMap),
+		container: map[string]string{},
 		qinfo: &QuickInfo{
 			NotLogSqlConf: bc.qinfo.NotLogSqlConf,
 			UserInfo:      &UserInfo{},
