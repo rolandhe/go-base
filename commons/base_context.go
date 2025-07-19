@@ -2,6 +2,7 @@ package commons
 
 import (
 	"maps"
+	"time"
 )
 
 const (
@@ -57,7 +58,8 @@ func (info *UserInfo) IsAdmin() bool {
 
 func NewBaseContext() *BaseContext {
 	return &BaseContext{
-		container: map[string]string{},
+		container:  map[string]string{},
+		createTime: time.Now().UnixMilli(),
 		qinfo: &QuickInfo{
 			NotLogSqlConf: false,
 			UserInfo:      &UserInfo{},
@@ -66,8 +68,9 @@ func NewBaseContext() *BaseContext {
 }
 
 type BaseContext struct {
-	container map[string]string
-	qinfo     *QuickInfo
+	container  map[string]string
+	createTime int64
+	qinfo      *QuickInfo
 }
 
 func (bc *BaseContext) Put(key string, value string) {
@@ -80,7 +83,8 @@ func (bc *BaseContext) Get(key string) string {
 
 func (bc *BaseContext) Clone() *BaseContext {
 	n := &BaseContext{
-		container: map[string]string{},
+		container:  map[string]string{},
+		createTime: bc.createTime,
 		qinfo: &QuickInfo{
 			NotLogSqlConf: bc.qinfo.NotLogSqlConf,
 			UserInfo:      &UserInfo{},
