@@ -19,6 +19,8 @@ var ClientReqCounter *prometheus.CounterVec
 var ClientReqGauge *prometheus.GaugeVec
 var ClientReqDuration *prometheus.HistogramVec
 
+var BizEventCounter *prometheus.CounterVec
+
 var counterMap = new(sync.Map)
 
 func StartMonitor(appName string, port int) {
@@ -51,6 +53,10 @@ func StartMonitor(appName string, port int) {
 		Help: "Duration to client requests.",
 	}, []string{"path", "error"})
 
+	BizEventCounter = promauto.NewCounterVec(prometheus.CounterOpts{
+		Name: "biz_event_count",
+		Help: "biz side event counter",
+	}, []string{"event"})
 	ListenAndServe(port)
 }
 
@@ -83,6 +89,13 @@ func DoServerCounter(url string) {
 		return
 	}
 	ServerReqCounter.WithLabelValues(url).Inc()
+}
+
+func DoBizEventCounter(event string) {
+	if BizEventCounter == nil {
+		return
+	}
+	BizEventCounter.WithLabelValues(event).Inc()
 }
 
 func DoServerDuration(url string, e string, cost int64) {
