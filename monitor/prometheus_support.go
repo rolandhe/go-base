@@ -56,7 +56,7 @@ func StartMonitor(appName string, port int) {
 	BizEventCounter = promauto.NewCounterVec(prometheus.CounterOpts{
 		Name: "biz_event_count",
 		Help: "biz side event counter",
-	}, []string{"event"})
+	}, []string{"event", "error"})
 	ListenAndServe(port)
 }
 
@@ -91,11 +91,11 @@ func DoServerCounter(url string) {
 	ServerReqCounter.WithLabelValues(url).Inc()
 }
 
-func DoBizEventCounter(event string) {
+func DoBizEventCounter(event string, e string) {
 	if BizEventCounter == nil {
 		return
 	}
-	BizEventCounter.WithLabelValues(event).Inc()
+	BizEventCounter.WithLabelValues(event, e).Inc()
 }
 
 func DoServerDuration(url string, e string, cost int64) {
