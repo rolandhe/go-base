@@ -4,10 +4,18 @@ import (
 	"errors"
 )
 
+type CodedResult interface {
+	GetCode() int
+}
+
 type Result[T any] struct {
 	Code   int    `json:"code"`
 	ErrMsg string `json:"errMsg"`
 	Data   T      `json:"data,omitempty"`
+}
+
+func (r *Result[T]) GetCode() int {
+	return r.Code
 }
 
 func QuickErrResult(errMsg string) *Result[*Void] {
