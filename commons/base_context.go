@@ -18,6 +18,14 @@ const (
 	ShareScene = "sscene"
 )
 
+type KvExtendRegisterMode int
+
+const (
+	KvExtendRegisterOverride KvExtendRegisterMode = 1
+	KvExtendRegisterFirst    KvExtendRegisterMode = 2
+	KvExtendRegisterLast     KvExtendRegisterMode = 3
+)
+
 type QuickInfo struct {
 	NotLogSqlConf bool
 
@@ -69,9 +77,10 @@ func NewBaseContext() *BaseContext {
 }
 
 type BaseContext struct {
-	container  map[string]string
-	createTime int64
-	qinfo      *QuickInfo
+	container    map[string]string
+	createTime   int64
+	qinfo        *QuickInfo
+	kvExtendFunc KvExtendFunc
 }
 
 func (bc *BaseContext) Put(key string, value string) {
@@ -114,4 +123,54 @@ func GetPlatform(bc *BaseContext) string {
 
 func GetProfile(bc *BaseContext) string {
 	return bc.Get(Profile)
+}
+
+func (bc *BaseContext) GetExtendValue(key string) any {
+	if bc.kvExtendFunc == nil {
+		return nil
+	}
+	return bc.kvExtendFunc(key)
+}
+
+func (bc *BaseContext) GetExtendStringValue(key string) string {
+	if bc.kvExtendFunc == nil {
+		return ""
+	}
+	v := bc.kvExtendFunc(key)
+	if v == nil {
+		return ""
+	}
+	str, ok := v.(string)
+	if !ok {
+		return ""
+	}
+	return str
+}
+
+func (bc *BaseContext) RegisterKvExtendFunc(kvExtendFunc KvExtendFunc, mode KvExtendRegisterMode) {
+	if bc.kvExtendFunc == nil || mode == KvExtendRegisterOverride {
+		bc.kvExtendFunc = kvExtendFunc
+		return
+	}
+	if kvExtendFunc == nil {
+		return
+	}
+	old := bc.kvExtendFunc
+	if mode == KvExtendRegisterFirst {
+		bc.kvExtendFunc = func(key string) any {
+			v := kvExtendFunc(key)
+			if v != nil {
+				return v
+			}
+			return old(key)
+		}
+		return
+	}
+	bc.kvExtendFunc = func(key string) any {
+		v := old(key)
+		if v != nil {
+			return v
+		}
+		return kvExtendFunc(key)
+	}
 }

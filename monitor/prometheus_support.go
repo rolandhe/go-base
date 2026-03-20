@@ -6,7 +6,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"log"
+	"github.com/rolandhe/go-base/logger"
 	"net/http"
 	"sync"
 )
@@ -64,7 +64,7 @@ func ListenAndServe(port int) {
 	go func() {
 		http.Handle("/monitor/prometheus", promhttp.Handler())
 		host := fmt.Sprintf(":%d", port)
-		log.Printf("start to monitor:%d....\n", port)
+		logger.Infof("start to monitor:%d....\n", port)
 		_ = http.ListenAndServe(host, nil)
 	}()
 }
