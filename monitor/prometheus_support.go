@@ -64,7 +64,7 @@ func ListenAndServe(port int) {
 	go func() {
 		http.Handle("/monitor/prometheus", promhttp.Handler())
 		host := fmt.Sprintf(":%d", port)
-		logger.Infof("start to monitor:%d....\n", port)
+		logger.Infof("start to monitor:%d....", port)
 		_ = http.ListenAndServe(host, nil)
 	}()
 }
