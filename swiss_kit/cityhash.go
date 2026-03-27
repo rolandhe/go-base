@@ -81,6 +81,8 @@ func mur(a uint32, h uint32) uint32 {
 	return h*5 + 0xe6546b64
 }
 
+// hash32Len13to24 computes hash for byte slices with length in [13, 24].
+// Caller must ensure len >= 13.
 func hash32Len13to24(s []byte, len uint) uint32 {
 	a := fetch32(s[len>>1-4:])
 	b := fetch32(s[4:])
@@ -103,6 +105,8 @@ func hash32Len0to4(s []byte, len uint) uint32 {
 	return fmix(mur(b, mur(uint32(len), c)))
 }
 
+// hash32Len5to12 computes hash for byte slices with length in [5, 12].
+// Caller must ensure len >= 5.
 func hash32Len5to12(s []byte, len uint) uint32 {
 	a := uint32(len)
 	b := a * 5
@@ -240,6 +244,8 @@ func hashLen16WithMul(u uint64, v uint64, mul uint64) uint64 {
 	return b
 }
 
+// hashLen0to16 computes hash for byte slices with length in [0, 16].
+// Caller must ensure len <= 16.
 func hashLen0to16(s []byte, len uint) uint64 {
 	if len >= 8 {
 		mul := k2 + uint64(len)*2
@@ -267,6 +273,8 @@ func hashLen0to16(s []byte, len uint) uint64 {
 
 // This probably works well for 16-byte strings as well, but it may be over kill
 // in that case.
+// hashLen17to32 computes hash for byte slices with length in [17, 32].
+// Caller must ensure len >= 17.
 func hashLen17to32(s []byte, len uint) uint64 {
 	mul := k2 + uint64(len)*2
 	a := fetch64(s) * k1
@@ -301,6 +309,8 @@ func weakHashLen32WithSeeds(
 		b)
 }
 
+// hashLen33to64 computes hash for byte slices with length in [33, 64].
+// Caller must ensure length >= 33.
 func hashLen33to64(s []byte, length uint) uint64 {
 	mul := k2 + uint64(length)*2
 	a := fetch64(s) * k2

@@ -32,11 +32,11 @@ func StartMonitor(appName string, port int) {
 		},
 	}, []string{"path"})
 	ServerReqGauge = promauto.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "server_response_cost_time",
+		Name: "server_response_duration_seconds",
 		Help: "Duration to server requests.",
 	}, []string{"path", "error"})
 	ServerReqDuration = promauto.NewHistogramVec(prometheus.HistogramOpts{
-		Name: "server_response_time_seconds",
+		Name: "server_response_duration_seconds_histogram",
 		Help: "Duration to server requests.",
 	}, []string{"path", "error"})
 
@@ -45,11 +45,11 @@ func StartMonitor(appName string, port int) {
 		Help: "client request counter",
 	}, []string{"path"})
 	ClientReqGauge = promauto.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "client_response_cost_time",
+		Name: "client_response_duration_seconds",
 		Help: "Duration to client requests.",
 	}, []string{"path", "error"})
 	ClientReqDuration = promauto.NewHistogramVec(prometheus.HistogramOpts{
-		Name: "client_response_time_seconds",
+		Name: "client_response_duration_seconds_histogram",
 		Help: "Duration to client requests.",
 	}, []string{"path", "error"})
 
@@ -65,7 +65,9 @@ func ListenAndServe(port int) {
 		http.Handle("/monitor/prometheus", promhttp.Handler())
 		host := fmt.Sprintf(":%d", port)
 		logger.Infof("start to monitor:%d....", port)
-		_ = http.ListenAndServe(host, nil)
+		if err := http.ListenAndServe(host, nil); err != nil {
+			logger.Errorf("monitor listen failed, port:%d, err:%v", port, err)
+		}
 	}()
 }
 
@@ -111,26 +113,18 @@ func IncCounter(name string, labelMap map[string]string) error {
 		return errors.New("invalid params")
 	}
 
-	counter, _ := counterMap.Load(name)
-	if counter == nil {
-		labelKeys := make([]string, 0, len(labelMap))
-		for labelKey := range labelMap {
-			labelKeys = append(labelKeys, labelKey)
-		}
-
-		counter = promauto.NewCounterVec(prometheus.CounterOpts{
-			Name: name,
-			Help: name,
-		}, labelKeys)
-
-		counterMap.Store(name, counter)
-	}
-
+	labelKeys := make([]string, 0, len(labelMap))
 	labelValues := make([]string, 0, len(labelMap))
-	for _, labelValue := range labelMap {
-		labelValues = append(labelValues, labelValue)
+	for k, v := range labelMap {
+		labelKeys = append(labelKeys, k)
+		labelValues = append(labelValues, v)
 	}
 
-	counter.(*prometheus.CounterVec).WithLabelValues(labelValues...).Inc()
+	actual, _ := counterMap.LoadOrStore(name, promauto.NewCounterVec(prometheus.CounterOpts{
+		Name: name,
+		Help: name,
+	}, labelKeys))
+
+	actual.(*prometheus.CounterVec).WithLabelValues(labelValues...).Inc()
 	return nil
 }

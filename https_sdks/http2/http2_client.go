@@ -22,10 +22,7 @@ func ensureHttpClient() {
 			return
 		}
 		httpTransport := &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: false,
-				VerifyConnection: func(state tls.ConnectionState) error {
-					return nil
-				}},
+			TLSClientConfig:     &tls.Config{InsecureSkipVerify: false},
 			IdleConnTimeout:     time.Minute * 30,
 			MaxIdleConnsPerHost: 5,
 			MaxConnsPerHost:     15,

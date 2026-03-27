@@ -32,7 +32,7 @@ func (s *SafeList[T]) Items() []T {
 	return slices.Clone(s.items)
 }
 
-func (s *SafeList[T]) Walk(fn func(T) bool) {
+func (s *SafeList[T]) WalkRead(fn func(T) bool) {
 	s.RLock()
 	defer s.RUnlock()
 	for _, v := range s.items {

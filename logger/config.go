@@ -50,7 +50,7 @@ func InitLogger() {
 		if !os.IsNotExist(err) {
 			panic(err.Error())
 		}
-		if err = os.Mkdir(LogConfig.Path, os.ModePerm); err != nil {
+		if err = os.MkdirAll(LogConfig.Path, os.ModePerm); err != nil {
 			panic(err.Error())
 		}
 	} else if !info.IsDir() {
