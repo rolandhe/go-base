@@ -13,19 +13,30 @@ import (
 )
 
 var http2Client *http.Client
-
 var onceInit sync.Once
+
+var limitConfig = struct {
+	maxIdleConnsPerHost int
+	maxIdleConns        int
+}{5, 15}
+
+func InitLimitConfig(maxIdleConnsPerHost, maxIdleConns int) {
+	limitConfig.maxIdleConnsPerHost = maxIdleConnsPerHost
+	limitConfig.maxIdleConns = maxIdleConns
+}
 
 func ensureHttpClient() {
 	onceInit.Do(func() {
 		if http2Client != nil {
 			return
 		}
+		maxIdleConnsPerHost := limitConfig.maxIdleConnsPerHost
+		maxIdleConns := limitConfig.maxIdleConns
 		httpTransport := &http.Transport{
 			TLSClientConfig:     &tls.Config{InsecureSkipVerify: false},
 			IdleConnTimeout:     time.Minute * 30,
-			MaxIdleConnsPerHost: 5,
-			MaxConnsPerHost:     15,
+			MaxIdleConnsPerHost: maxIdleConnsPerHost,
+			MaxConnsPerHost:     maxIdleConns,
 		}
 		internal.ConfigureProxySupport(httpTransport)
 		err := http2.ConfigureTransport(httpTransport)
