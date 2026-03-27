@@ -13,7 +13,7 @@ type Void struct {
 }
 
 func (s *Void) UnmarshalJSON(b []byte) error {
-	if 0 != bytes.Compare(nullJsonValue, b) {
+	if !bytes.Equal(nullJsonValue, b) {
 		return errors.New("just parse 'null' string")
 	}
 	return nil

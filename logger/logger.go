@@ -13,7 +13,11 @@ func getGoroutineID() uint64 {
 	b := make([]byte, 64)
 	b = b[:runtime.Stack(b, false)]
 	b = bytes.TrimPrefix(b, []byte("goroutine "))
-	b = b[:bytes.IndexByte(b, ' ')]
+	idx := bytes.IndexByte(b, ' ')
+	if idx < 0 {
+		return 0
+	}
+	b = b[:idx]
 	n, _ := strconv.ParseUint(string(b), 10, 64)
 	return n
 }

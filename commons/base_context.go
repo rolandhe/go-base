@@ -106,6 +106,7 @@ func (bc *BaseContext) Clone() *BaseContext {
 	}
 	*n.qinfo.UserInfo = *bc.qinfo.UserInfo
 	maps.Copy(n.container, bc.container)
+	n.kvExtendFunc = bc.kvExtendFunc
 	return n
 }
 

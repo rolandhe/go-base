@@ -72,7 +72,7 @@ func EmptyPageList[T any](pageNo int, pageSize int) *PageList[T] {
 }
 
 func calcTotalPages(totalCount int, pageSize int) int {
-	if totalCount == 0 {
+	if totalCount == 0 || pageSize <= 0 {
 		return 0
 	}
 

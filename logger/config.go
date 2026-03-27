@@ -16,17 +16,18 @@ var LogConfig = &struct {
 	LogRotateMaxBackups int
 	LogRotateMaxAge     int
 	LogWithGid          bool
+	LogFileName         string
 }{
 	Path:                "stdout",
 	LogRotateMaxSize:    500,
 	LogRotateMaxBackups: 10,
 	LogRotateMaxAge:     14,
 	LogWithGid:          true,
+	LogFileName:         "out.log",
 }
 
 func InitLogger() {
 	var config zap.Config
-	//logPath := ppath
 
 	config = zap.NewDevelopmentConfig()
 	config.OutputPaths = []string{LogConfig.Path}
@@ -58,7 +59,7 @@ func InitLogger() {
 
 	// 配置日志滚动
 	lumberjackLogger := &lumberjack.Logger{
-		Filename:   path.Join(LogConfig.Path, "out.log"), // 日志文件路径
+		Filename:   path.Join(LogConfig.Path, LogConfig.LogFileName), // 日志文件路径
 		MaxSize:    LogConfig.LogRotateMaxSize,           // 每个日志文件的最大尺寸（MB）
 		MaxBackups: LogConfig.LogRotateMaxBackups,        // 保留的旧日志文件的最大数量
 		MaxAge:     LogConfig.LogRotateMaxAge,            // 保留旧日志文件的最大天数
