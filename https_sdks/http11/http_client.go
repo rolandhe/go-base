@@ -26,7 +26,7 @@ func ensureHttpClient() {
 			MaxIdleConnsPerHost: 5,
 			MaxConnsPerHost:     15,
 		}
-		httpTransport.Proxy = nil
+		internal.ConfigureProxySupport(httpTransport)
 		httpClient = &http.Client{
 			Transport: httpTransport,
 		}

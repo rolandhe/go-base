@@ -26,8 +26,8 @@ func ensureHttpClient() {
 			IdleConnTimeout:     time.Minute * 30,
 			MaxIdleConnsPerHost: 5,
 			MaxConnsPerHost:     15,
-			Proxy:               nil,
 		}
+		internal.ConfigureProxySupport(httpTransport)
 		err := http2.ConfigureTransport(httpTransport)
 		if err != nil {
 			panic(err)

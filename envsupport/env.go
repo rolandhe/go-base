@@ -2,6 +2,7 @@ package envsupport
 
 import (
 	"os"
+	"strings"
 	"sync"
 )
 
@@ -26,10 +27,16 @@ func ConfigPath() string {
 func loadFunc() {
 	profile = os.Getenv(ProfileEnvVar)
 	if profile == "" {
-		panic("environment variable " + ProfileEnvVar + " not set")
+		profile = os.Getenv(strings.ToUpper(ProfileEnvVar))
+		if profile == "" {
+			panic("environment variable " + ProfileEnvVar + " not set")
+		}
 	}
 	configPath = os.Getenv(ConfigPathVar)
 	if configPath == "" {
-		panic("environment variable " + ConfigPathVar + " not set")
+		configPath = os.Getenv(strings.ToUpper(ConfigPathVar))
+		if configPath == "" {
+			panic("environment variable " + ConfigPathVar + " not set")
+		}
 	}
 }
