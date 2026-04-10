@@ -1,10 +1,12 @@
 module github.com/rolandhe/go-base
 
-go 1.23.3
+go 1.25.0
 
 require (
 	github.com/prometheus/client_golang v1.23.0
 	go.uber.org/zap v1.27.0
+	golang.org/x/net v0.40.0
+	golang.org/x/text v0.36.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
