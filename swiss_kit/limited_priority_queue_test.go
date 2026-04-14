@@ -25,3 +25,30 @@ func TestPQ(t *testing.T) {
 		fmt.Println(v)
 	}
 }
+
+type Integer struct {
+	v int
+}
+
+func TestStPQ(t *testing.T) {
+	k := 5
+
+	// 小顶堆：最小的在顶
+	pq := NewLimitedPriorityQueue[*Integer](k, false, func(a, b *Integer) bool {
+		return a.v < b.v
+	})
+
+	nums := []int{5, 2, 55, 9, 1, 32, 7, 16, 3, 10, 8}
+
+	for _, num := range nums {
+		pq.Push(&Integer{
+			v: num,
+		})
+	}
+
+	ret := pq.CloneToSlice()
+
+	for _, v := range ret {
+		fmt.Println(v.v)
+	}
+}
