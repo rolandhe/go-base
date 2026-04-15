@@ -19,7 +19,7 @@ func TestPQ(t *testing.T) {
 		pq.Push(num)
 	}
 
-	ret := pq.ToSlice()
+	ret := pq.PopToSlice()
 
 	for _, v := range ret {
 		fmt.Println(v)

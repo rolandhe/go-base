@@ -3,6 +3,7 @@ package swiss_kit
 import (
 	"container/heap"
 	"slices"
+	"sort"
 )
 
 type LimitedPriorityQueue[T any] struct {
@@ -44,7 +45,7 @@ func (lpq *LimitedPriorityQueue[T]) Pop() T {
 	return v.(T)
 }
 
-func (lpq *LimitedPriorityQueue[T]) ToSlice() []T {
+func (lpq *LimitedPriorityQueue[T]) PopToSlice() []T {
 	if lpq.st.Len() == 0 {
 		return nil
 	}
@@ -59,17 +60,28 @@ func (lpq *LimitedPriorityQueue[T]) ToSlice() []T {
 	return ret
 }
 
+func (lpq *LimitedPriorityQueue[T]) OnceToSlice() []T {
+	if lpq.st.Len() == 0 {
+		return nil
+	}
+
+	items := lpq.st.items
+	sort.Slice(items, func(i, j int) bool {
+		return lpq.st.cmp(items[i], items[j])
+	})
+	lpq.st.items = nil
+	return items
+}
+
 func (lpq *LimitedPriorityQueue[T]) CloneToSlice() []T {
 	if lpq.st.Len() == 0 {
 		return nil
 	}
-	clonePq := &LimitedPriorityQueue[T]{
-		st: &storeCore[T]{
-			cmp:   lpq.st.cmp,
-			items: slices.Clone(lpq.st.items),
-		},
-	}
-	return clonePq.ToSlice()
+	items := slices.Clone(lpq.st.items)
+	sort.Slice(items, func(i, j int) bool {
+		return lpq.st.cmp(items[i], items[j])
+	})
+	return items
 }
 
 func nextIndex(originalLen int) func() int {
