@@ -67,7 +67,7 @@ func (lpq *LimitedPriorityQueue[T]) OnceToSlice() []T {
 
 	items := lpq.st.items
 	sort.Slice(items, func(i, j int) bool {
-		return lpq.st.cmp(items[i], items[j])
+		return !lpq.st.cmp(items[i], items[j])
 	})
 	lpq.st.items = nil
 	return items
@@ -79,7 +79,7 @@ func (lpq *LimitedPriorityQueue[T]) CloneToSlice() []T {
 	}
 	items := slices.Clone(lpq.st.items)
 	sort.Slice(items, func(i, j int) bool {
-		return lpq.st.cmp(items[i], items[j])
+		return !lpq.st.cmp(items[i], items[j])
 	})
 	return items
 }

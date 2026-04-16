@@ -2,7 +2,6 @@ package swiss_kit
 
 import (
 	"fmt"
-	"log"
 	"testing"
 )
 
@@ -35,7 +34,7 @@ func TestStPQ(t *testing.T) {
 	k := 5
 
 	// 小顶堆：最小的在顶
-	pq := NewLimitedPriorityQueue[*Integer](k, false, func(a, b *Integer) bool {
+	pq := NewLimitedPriorityQueue[*Integer](k, true, func(a, b *Integer) bool {
 		return a.v < b.v
 	})
 
@@ -47,7 +46,7 @@ func TestStPQ(t *testing.T) {
 		})
 	}
 
-	ret := pq.CloneToSlice()
+	ret := pq.OnceToSlice()
 
 	for _, v := range ret {
 		fmt.Println(v.v)
@@ -57,7 +56,7 @@ func TestStPQ(t *testing.T) {
 func TestIndexSort(t *testing.T) {
 	k := 5
 	// 小顶堆：最小的在顶
-	pq := NewLimitedPriorityQueue[*Integer](k, false, func(a, b *Integer) bool {
+	pq := NewLimitedPriorityQueue[*Integer](k, true, func(a, b *Integer) bool {
 		return a.v < b.v
 	})
 
@@ -82,5 +81,8 @@ func TestIndexSort(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	log.Println(ret)
+	for _, v := range ret {
+		fmt.Println(v)
+	}
+	//log.Println(ret)
 }
