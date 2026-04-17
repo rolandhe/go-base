@@ -115,6 +115,9 @@ func CallWithResult[V any](hc *http.Client, bc *commons.BaseContext, req *http.R
 	}
 
 	var v = new(V)
+	if shouldBytes(v, content) {
+		return v, content, nil
+	}
 	if shouldString(v, content) {
 		return v, content, nil
 	}
@@ -126,6 +129,14 @@ func shouldString(v any, content []byte) bool {
 	p, ok := v.(*string)
 	if ok {
 		*p = string(content)
+	}
+	return ok
+}
+
+func shouldBytes(v any, content []byte) bool {
+	p, ok := v.(*[]byte)
+	if ok {
+		*p = content
 	}
 	return ok
 }
