@@ -77,10 +77,11 @@ func NewBaseContext() *BaseContext {
 }
 
 type BaseContext struct {
-	container    map[string]string
-	createTime   int64
-	qinfo        *QuickInfo
-	kvExtendFunc KvExtendFunc
+	container        map[string]string
+	createTime       int64
+	qinfo            *QuickInfo
+	kvFromHeaderFunc KvExtendFunc
+	kvFromQueryFunc  KvExtendFunc
 }
 
 func (bc *BaseContext) Put(key string, value string) {
@@ -106,7 +107,8 @@ func (bc *BaseContext) Clone() *BaseContext {
 	}
 	*n.qinfo.UserInfo = *bc.qinfo.UserInfo
 	maps.Copy(n.container, bc.container)
-	n.kvExtendFunc = bc.kvExtendFunc
+	n.kvFromHeaderFunc = bc.kvFromHeaderFunc
+	n.kvFromQueryFunc = bc.kvFromQueryFunc
 	return n
 }
 
@@ -126,18 +128,18 @@ func GetProfile(bc *BaseContext) string {
 	return bc.Get(Profile)
 }
 
-func (bc *BaseContext) GetExtendValue(key string) any {
-	if bc.kvExtendFunc == nil {
+func (bc *BaseContext) GetHeaderValue(key string) any {
+	if bc.kvFromHeaderFunc == nil {
 		return nil
 	}
-	return bc.kvExtendFunc(key)
+	return bc.kvFromHeaderFunc(key)
 }
 
-func (bc *BaseContext) GetExtendStringValue(key string) string {
-	if bc.kvExtendFunc == nil {
+func (bc *BaseContext) GetHeaderStringValue(key string) string {
+	if bc.kvFromHeaderFunc == nil {
 		return ""
 	}
-	v := bc.kvExtendFunc(key)
+	v := bc.kvFromHeaderFunc(key)
 	if v == nil {
 		return ""
 	}
@@ -148,18 +150,40 @@ func (bc *BaseContext) GetExtendStringValue(key string) string {
 	return str
 }
 
-func (bc *BaseContext) RegisterKvExtendFunc(kvExtendFunc KvExtendFunc, mode KvExtendRegisterMode) {
-	if bc.kvExtendFunc == nil || mode == KvExtendRegisterOverride {
-		bc.kvExtendFunc = kvExtendFunc
+func (bc *BaseContext) GetQueryValue(key string) any {
+	if bc.kvFromQueryFunc == nil {
+		return nil
+	}
+	return bc.kvFromQueryFunc(key)
+}
+
+func (bc *BaseContext) GetQueryStringValue(key string) string {
+	if bc.kvFromQueryFunc == nil {
+		return ""
+	}
+	v := bc.kvFromQueryFunc(key)
+	if v == nil {
+		return ""
+	}
+	str, ok := v.(string)
+	if !ok {
+		return ""
+	}
+	return str
+}
+
+func (bc *BaseContext) RegisterKvFromHeaderFunc(kvHeaderFunc KvExtendFunc, mode KvExtendRegisterMode) {
+	if bc.kvFromHeaderFunc == nil || mode == KvExtendRegisterOverride {
+		bc.kvFromHeaderFunc = kvHeaderFunc
 		return
 	}
-	if kvExtendFunc == nil {
+	if kvHeaderFunc == nil {
 		return
 	}
-	old := bc.kvExtendFunc
+	old := bc.kvFromHeaderFunc
 	if mode == KvExtendRegisterFirst {
-		bc.kvExtendFunc = func(key string) any {
-			v := kvExtendFunc(key)
+		bc.kvFromHeaderFunc = func(key string) any {
+			v := kvHeaderFunc(key)
 			if v != nil {
 				return v
 			}
@@ -167,11 +191,39 @@ func (bc *BaseContext) RegisterKvExtendFunc(kvExtendFunc KvExtendFunc, mode KvEx
 		}
 		return
 	}
-	bc.kvExtendFunc = func(key string) any {
+	bc.kvFromHeaderFunc = func(key string) any {
 		v := old(key)
 		if v != nil {
 			return v
 		}
-		return kvExtendFunc(key)
+		return kvHeaderFunc(key)
+	}
+}
+
+func (bc *BaseContext) RegisterKvFromQueryFunc(kvQueryFunc KvExtendFunc, mode KvExtendRegisterMode) {
+	if bc.kvFromQueryFunc == nil || mode == KvExtendRegisterOverride {
+		bc.kvFromQueryFunc = kvQueryFunc
+		return
+	}
+	if kvQueryFunc == nil {
+		return
+	}
+	old := bc.kvFromQueryFunc
+	if mode == KvExtendRegisterFirst {
+		bc.kvFromQueryFunc = func(key string) any {
+			v := kvQueryFunc(key)
+			if v != nil {
+				return v
+			}
+			return old(key)
+		}
+		return
+	}
+	bc.kvFromQueryFunc = func(key string) any {
+		v := old(key)
+		if v != nil {
+			return v
+		}
+		return kvQueryFunc(key)
 	}
 }
